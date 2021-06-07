@@ -2,8 +2,11 @@ import {
   CART_ADD_ITEM,
   CART_REMOVE_ITEM,
   CART_SAVE_SHIPPING_ADDRESS,
-  CART_SAVE_PAYMENT_METHOD
+  CART_SAVE_PAYMENT_METHOD,
+  CART_RESET_ITEM,
+  CART_SAVE_ITEMS
 } from "../constants/cartConstants";
+import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
 
 export const cartReducers = (state={cartItems:[], shippingAddress: {} },
     action
@@ -48,7 +51,14 @@ export const cartReducers = (state={cartItems:[], shippingAddress: {} },
           ...state,
           paymentMethod: action.payload,
         };
-
+      case CART_SAVE_ITEMS:
+        return{
+          ...state,
+          cartItems: action.payload,
+        };
+      case CART_RESET_ITEM:
+        return { cartItems: [] };
+       
       default:
         return state;
     }
