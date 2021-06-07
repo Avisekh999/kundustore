@@ -11,7 +11,12 @@ import asyncHandler from 'express-async-handler'
     //throw new Error('Not Authorized')
    res.json(products)
 })
+ 
 
+
+//@desc Fetch single Product
+//@route DELETE /api/products/:id
+//@ccess PUBLIC
 
  const getProductById = asyncHandler(async(req, res) => {
     const product = await Products.findById(req.params.id)
@@ -25,7 +30,28 @@ import asyncHandler from 'express-async-handler'
     }
 })
 
+
+
+
+//@desc Delete a Product
+//@route DELETE /api/products/:id
+//@ccess Private/Admin
+
+const deleteProduct = asyncHandler(async(req, res) => {
+    const product = await Products.findById(req.params.id)
+    if (product){
+       await product.remove()
+       res.json({message: 'Product removed'})
+    }
+    else{
+        res.status(404).json({message: 'Product not found'})
+        console.log("error");
+    }
+})
+
+
 export {
     getProducts,
-    getProductById
+    getProductById,
+    deleteProduct
 }
