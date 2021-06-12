@@ -22,19 +22,20 @@ import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
-  // const [rating, setRating] = useState(0);
-  // const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const dispatch = useDispatch();
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
 
-  // const userLogin = useSelector((state) => state.userLogin);
-  // const { userInfo } = userLogin;
+  const ProductReviewCreate = useSelector((state) => state.ProductReviewCreate);
+  const { success: successProductReview, error: errorProductReview } =
+    ProductReviewCreate;
 
-  // const ProductReviewCreate = useSelector((state) => state.ProductReviewCreate);
-  // const { success: successProductReview, error: errorProductReview } = ProductReviewCreate;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   useEffect(() => {
     dispatch(listProductDetails(match.params.id));
@@ -44,13 +45,9 @@ const ProductScreen = ({ history, match }) => {
     history.push(`/cart/${match.params.id} ?qty=${qty}`);
   };
 
-  // const submitHandler = (e) => {
-  //   e.preventDefault()
-  //   dispatch(createProductReview(match.params.id,{
-  //     rating,
-  //     comment
-  //   }))
-  // }
+  const submitHandler = () => {
+    console.log('handler')
+  }
   // const date = (new Date()).toLocaleDateString('en-US');
   // // console.log(date)
   // const date1 =Number(date.substr(0,1))
@@ -166,7 +163,7 @@ const ProductScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
-          {/* <Row>
+          <Row>
             <Col md={6}>
               <h2>Reviews</h2>
               {product.reviews.length == 0 && <Message>No Reviews</Message>}
@@ -181,9 +178,11 @@ const ProductScreen = ({ history, match }) => {
                 ))}
                 <ListGroup.Item>
                   <h2>Write a Customer Review</h2>
-                  {errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
+                  {errorProductReview && (
+                    <Message variant='danger'>{errorProductReview}</Message>
+                  )}
                   {userInfo ? (
-                    <Form >
+                    <Form onsubmit={submitHandler}>
                       <Form.Group controlId='rating'>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control as='select' value={rating} onChange={(e) => setRating(e.target.value)}>
@@ -195,23 +194,35 @@ const ProductScreen = ({ history, match }) => {
                           <option value='5'>5 - Excellent</option>
                         </Form.Control>
                       </Form.Group>
+                      <br />
                       <Form.Group controlId='comment'>
-                        <Form.label>Comment</Form.label>
-                        <Form.Control as='textarea' row='3' value={comment} 
-                        onChange={(e) =>setComment(e.target.value)}>
-                          </Form.Control> 
+                        <Form.Label>Comment</Form.Label>
+                        <Form.Control
+                          as='textarea'
+                          row='3'
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></Form.Control>
                       </Form.Group>
-                      <Button type='submit' variant='primary'>Submit</Button>
+                      <br />
+                      <Button
+                        
+                        type='submit'
+                        variant='primary'
+                      >
+                        Submit
+                      </Button>
                     </Form>
                   ) : (
                     <Message>
-                      Please <Link to="/login">Sign in</Link> to write a review
+                      Please <Link to="/login">sign in</Link> to write a Review
+                      {' '}
                     </Message>
                   )}
                 </ListGroup.Item>
               </ListGroup>
             </Col>
-          </Row> */}
+          </Row>
         </>
       )}
     </>
