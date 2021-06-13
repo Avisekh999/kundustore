@@ -30,23 +30,37 @@ const ProductScreen = ({ history, match }) => {
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
 
-  const ProductReviewCreate = useSelector((state) => state.ProductReviewCreate);
+  console.log(productDetails)
+  const productReviewCreate = useSelector((state) => state.productReviewCreate);
   const { success: successProductReview, error: errorProductReview } =
-    ProductReviewCreate;
+    productReviewCreate;
+   console.log(productReviewCreate)
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  console.log(userInfo)
 
   useEffect(() => {
+    if(successProductReview){
+      alert('Review Submitted')
+      setRating(0)
+      setComment('')
+      dispatch({type: PRODUCT_CREATE_REVIEW_RESET})
+    }
     dispatch(listProductDetails(match.params.id));
-  }, [dispatch, match]);
+  }, [dispatch, match, successProductReview]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id} ?qty=${qty}`);
   };
 
-  const submitHandler = () => {
-    console.log('handler')
+  const submitHandler = (e) => {
+    e.preventDefault()
+    dispatch(createProductReview(match.params.id, {
+      rating,
+      comment,
+    })
+    )
   }
   // const date = (new Date()).toLocaleDateString('en-US');
   // // console.log(date)
@@ -57,8 +71,8 @@ const ProductScreen = ({ history, match }) => {
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0"); // get the date padStart => 01
   var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  // var yyyy = today.getFullYear();
-  // var fullDate = dd + "." + mm + "." + yyyy;
+  var yyyy = today.getFullYear();
+  var fullDate = dd + "." + mm + "." + yyyy;
 
   var someDate = new Date();
   var numberOfDaysToAdd = 1;
@@ -172,7 +186,7 @@ const ProductScreen = ({ history, match }) => {
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
                     <Rating value={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{fullDate}</p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
@@ -182,7 +196,7 @@ const ProductScreen = ({ history, match }) => {
                     <Message variant='danger'>{errorProductReview}</Message>
                   )}
                   {userInfo ? (
-                    <Form onsubmit={submitHandler}>
+                    <Form onSubmit={submitHandler}>
                       <Form.Group controlId='rating'>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control as='select' value={rating} onChange={(e) => setRating(e.target.value)}>
